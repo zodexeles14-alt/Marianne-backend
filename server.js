@@ -3,7 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
-const donationRoutes = require('./routes/donationRoutes');
+const donationRoutes = require('./donationRoutes');
 
 dotenv.config();
 
