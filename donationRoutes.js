@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const obipay = require('../obipayService');
+const obipay = require('./obipayService');
 
 router.post('/donations/initiate', async (req, res) => {
   try {
