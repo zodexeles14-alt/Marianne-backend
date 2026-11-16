@@ -1,10 +1,11 @@
-const fetch = require('node-fetch');
-
-const OBIPAY_BASE_URL = (process.env.OBPAY_BASE_URL || process.env.OBIPAY_BASE_URL || 'https://obpay.online/api/public/v1').trim();
-const OBIPAY_SECRET_KEY = (process.env.OBPAY_SECRET_KEY || process.env.OBIPAY_SECRET_KEY || '').trim();
-
 const initiateCollection = async ({ amount, phone_number, customer_name, currency = 'UGX', reference, description, idempotencyKey }) => {
   try {
+    // Automatically convert 070... or +25670... to 25670...
+    const cleanedPhone = String(phone_number).trim().replace(/\s+/g, '');
+    const formattedPhone = cleanedPhone.startsWith('0')
+      ? `256${cleanedPhone.slice(1)}`
+      : cleanedPhone.replace(/^\+/, '');
+
     const response = await fetch(`${OBIPAY_BASE_URL}/collect`, {
       method: 'POST',
       headers: {
@@ -15,7 +16,7 @@ const initiateCollection = async ({ amount, phone_number, customer_name, currenc
       },
       body: JSON.stringify({
         amount,
-        phone_number,
+        phone_number: formattedPhone,
         customer_name,
         currency,
         reference,
@@ -41,22 +42,3 @@ const initiateCollection = async ({ amount, phone_number, customer_name, currenc
     throw err;
   }
 };
-
-const verifyTransaction = async (reference) => {
-  try {
-    const response = await fetch(`${OBIPAY_BASE_URL}/transactions/${reference}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${OBIPAY_SECRET_KEY}`,
-        'Accept': 'application/json'
-      }
-    });
-    const data = await response.json();
-    if (!response.ok) return null;
-    return data;
-  } catch (err) {
-    return null;
-  }
-};
-
-module.exports = { initiateCollection, verifyTransaction };
