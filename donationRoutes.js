@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
-const obipay = require('./obpayService');
+const obpay = require('./obpayService');
 
 router.post('/donations/initiate', async (req, res) => {
   try {
@@ -21,7 +21,7 @@ router.post('/donations/initiate', async (req, res) => {
       donorEmail: donorEmail || '',
       donorPhoneContact: donorPhoneContact || phoneNumber,
       donorAddress: donorAddress || '',
-      paymentMethod: paymentMethod || 'ObiPay Mobile Money',
+      paymentMethod: paymentMethod || 'ObPay Mobile Money',
       accountNumber: accountNumber || '',
       phoneNumber,
       amount: Number(amount),
@@ -66,7 +66,7 @@ router.get('/transactions/:reference', async (req, res) => {
     }
 
     if (tx.status === 'PENDING' && req.query.sync === 'true') {
-      const liveStatus = await obipay.verifyTransaction(reference);
+      const liveStatus = await obpay.verifyTransaction(reference);
       if (liveStatus && liveStatus.status && liveStatus.status !== tx.status) {
         tx = db.updateTransactionStatus(reference, liveStatus.status, liveStatus);
       }
