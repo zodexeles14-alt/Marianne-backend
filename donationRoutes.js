@@ -5,11 +5,12 @@ const obipay = require('./obipayService');
 
 router.post('/donations/initiate', async (req, res) => {
   try {
-    const { donorName, donorEmail, donorPhoneContact, donorAddress, paymentMethod, accountNumber, phoneNumber, network, amount, currency = 'UGX', program, message } = req.body;
+    const { donorName, donorEmail, donorPhoneContact, donorAddress, paymentMethod, accountNumber, phoneNumber, amount, currency = 'UGX', program, message } = req.body;
     const idempotencyKey = req.headers['idempotency-key'] || `idem-${Date.now()}`;
 
-    if (!donorName || !phoneNumber || !network || !amount) {
-      return res.status(400).json({ success: false, error: 'Missing required fields: donorName, phoneNumber, network, amount' });
+    if (!donorName || !phoneNumber || !amount)
+      {
+      return res.status(400).json({ success: false, error: 'Missing required fields: donorName, phoneNumber, amount' });
     }
 
     const reference = `MF-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -23,7 +24,6 @@ router.post('/donations/initiate', async (req, res) => {
       paymentMethod: paymentMethod || 'ObiPay Mobile Money',
       accountNumber: accountNumber || '',
       phoneNumber,
-      network,
       amount: Number(amount),
       currency,
       program: program || 'General Fund',
@@ -34,16 +34,16 @@ router.post('/donations/initiate', async (req, res) => {
     };
 
     db.saveTransaction(newTx);
-
-    const obpayResult = await obipay.initiateCollection({
-      amount: Number(amount),
-      phoneNumber,
-      network,
-      currency,
-      reference,
-      description: `Marianne Foundation - ${program}`,
-      idempotencyKey
-    });
+const obpayResult = await obpay.initiateCollection({
+    amount: Number(amount),
+    phone_number: phoneNumber,
+    customer_name: donorName,
+    currency,
+    reference,
+    description: `Marianne Foundation - ${program}`,
+    idempotencyKey
+});
+    
 
     res.status(201).json({
       success: true,
