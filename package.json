@@ -1,7 +1,7 @@
 {
   "name": "marianne-foundation-backend",
   "version": "1.0.0",
-  "description": "Node.js & Express Backend with ObiPay Mobile Money Integration",
+  "description": "Node.js & Express Backend with ObPay Mobile Money Integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
