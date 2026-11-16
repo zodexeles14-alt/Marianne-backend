@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
-const OBIPAY_BASE_URL = process.env.OBPAY_BASE_URL || 'https://api.obpay.online/v1';
-const OBIPAY_SECRET_KEY = process.env.OBPAY_SECRET_KEY || 'sk_live_marianne_sample';
+const OBPAY_BASE_URL = process.env.OBPAY_BASE_URL || 'https://api.obpay.online/v1';
+const OBPAY_SECRET_KEY = process.env.OBPAY_SECRET_KEY || 'sk_live_marianne_sample';
 
 const initiateCollection = async ({ amount, phoneNumber, currency = 'UGX', reference, description, idempotencyKey }) => {
   try {
