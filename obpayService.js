@@ -1,11 +1,11 @@
 const fetch = require('node-fetch');
 
-const OBPAY_BASE_URL = process.env.OBPAY_BASE_URL || 'https://api.obpay.online/v1';
-const OBPAY_SECRET_KEY = process.env.OBPAY_SECRET_KEY || 'sk_live_marianne_sample';
+const OBIPAY_BASE_URL = process.env.OBIPAY_BASE_URL || 'https://api.obpay.online/v1';
+const OBIPAY_SECRET_KEY = process.env.OBIPAY_SECRET_KEY || 'sk_live_marianne_sample';
 
 const initiateCollection = async ({ amount, phoneNumber, customer_name, currency = 'UGX', reference, description, idempotencyKey }) => {
   try {
-    const response = await fetch(`${OBPAY_BASE_URL}/collect`, {
+    const response = await fetch(`${OBIPAY_BASE_URL}/collect`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OBIPAY_SECRET_KEY}`,
@@ -44,10 +44,10 @@ const initiateCollection = async ({ amount, phoneNumber, customer_name, currency
 
 const verifyTransaction = async (reference) => {
   try {
-    const response = await fetch(`${OBPAY_BASE_URL}/transactions/${reference}`, {
+    const response = await fetch(`${OBIPAY_BASE_URL}/transactions/${reference}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${OBPAY_SECRET_KEY}`,
+        'Authorization': `Bearer ${OBIPAY_SECRET_KEY}`,
         'Accept': 'application/json'
       }
     });
