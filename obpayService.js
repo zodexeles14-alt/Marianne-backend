@@ -13,9 +13,10 @@ const initiateCollection = async ({ amount, phoneNumber, currency = 'UGX', refer
         'Accept': 'application/json',
         ...(idempotencyKey && { 'Idempotency-Key': idempotencyKey })
       },
-      body: JSON.stringify({
+            body: JSON.stringify({
         amount,
         phone_number: phoneNumber,
+        customer_name, // Add this line
         currency,
         reference,
         description
