@@ -3,20 +3,20 @@ const fetch = require('node-fetch');
 const OBPAY_BASE_URL = process.env.OBPAY_BASE_URL || 'https://api.obpay.online/v1';
 const OBPAY_SECRET_KEY = process.env.OBPAY_SECRET_KEY || 'sk_live_marianne_sample';
 
-const initiateCollection = async ({ amount, phoneNumber, currency = 'UGX', reference, description, idempotencyKey }) => {
+const initiateCollection = async ({ amount, phoneNumber, customer_name, currency = 'UGX', reference, description, idempotencyKey }) => {
   try {
     const response = await fetch(`${OBPAY_BASE_URL}/collect`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OBPAY_SECRET_KEY}`,
+        'Authorization': `Bearer ${OBIPAY_SECRET_KEY}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...(idempotencyKey && { 'Idempotency-Key': idempotencyKey })
       },
-            body: JSON.stringify({
+      body: JSON.stringify({
         amount,
         phone_number: phoneNumber,
-        customer_name, // Add this line
+        customer_name,
         currency,
         reference,
         description
