@@ -42,3 +42,5 @@ const initiateCollection = async ({ amount, phone_number, customer_name, currenc
     throw err;
   }
 };
+module.exports = { initiateCollection, verifyTransaction };
+
