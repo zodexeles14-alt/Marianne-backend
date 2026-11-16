@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
-const obipay = require('./obpayService');
+const obpay = require('./obpayService');
 
 router.post('/donations/initiate', async (req, res) => {
   try {
     const { donorName, donorEmail, donorPhoneContact, donorAddress, paymentMethod, accountNumber, phoneNumber, amount, currency = 'UGX', program, message } = req.body;
     const idempotencyKey = req.headers['idempotency-key'] || `idem-${Date.now()}`;
 
-    if (!donorName || !phoneNumber || !amount)
-      {
+    if (!donorName || !phoneNumber || !amount) {
       return res.status(400).json({ success: false, error: 'Missing required fields: donorName, phoneNumber, amount' });
     }
 
@@ -34,16 +33,16 @@ router.post('/donations/initiate', async (req, res) => {
     };
 
     db.saveTransaction(newTx);
-const obipayResult = await obipay.initiateCollection({
-    amount: Number(amount),
-    phone_number: phoneNumber,
-    customer_name: donorName,
-    currency,
-    reference,
-    description: `Marianne Foundation - ${program}`,
-    idempotencyKey
-});
-    
+
+    const obpayResult = await obpay.initiateCollection({
+      amount: Number(amount),
+      phoneNumber,
+      customer_name: donorName,
+      currency,
+      reference,
+      description: `Marianne Foundation - ${program || 'General Fund'}`,
+      idempotencyKey
+    });
 
     res.status(201).json({
       success: true,
@@ -66,7 +65,7 @@ router.get('/transactions/:reference', async (req, res) => {
     }
 
     if (tx.status === 'PENDING' && req.query.sync === 'true') {
-      const liveStatus = await obipay.verifyTransaction(reference);
+      const liveStatus = await obpay.verifyTransaction(reference);
       if (liveStatus && liveStatus.status && liveStatus.status !== tx.status) {
         tx = db.updateTransactionStatus(reference, liveStatus.status, liveStatus);
       }
