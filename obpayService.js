@@ -1,9 +1,9 @@
 const fetch = require('node-fetch');
 
-const OBIPAY_BASE_URL = process.env.OBPAY_BASE_URL || 'https://api.obpay.online/v1';
-const OBIPAY_SECRET_KEY = process.env.OBPAY_SECRET_KEY || 'sk_live_marianne_sample';
+const OBIPAY_BASE_URL = (process.env.OBPAY_BASE_URL || process.env.OBIPAY_BASE_URL || 'https://obpay.online/api/public/v1').trim();
+const OBIPAY_SECRET_KEY = (process.env.OBPAY_SECRET_KEY || process.env.OBIPAY_SECRET_KEY || '').trim();
 
-const initiateCollection = async ({ amount, phoneNumber, customer_name, currency = 'UGX', reference, description, idempotencyKey }) => {
+const initiateCollection = async ({ amount, phone_number, customer_name, currency = 'UGX', reference, description, idempotencyKey }) => {
   try {
     const response = await fetch(`${OBIPAY_BASE_URL}/collect`, {
       method: 'POST',
@@ -15,7 +15,7 @@ const initiateCollection = async ({ amount, phoneNumber, customer_name, currency
       },
       body: JSON.stringify({
         amount,
-        phone_number: phoneNumber,
+        phone_number,
         customer_name,
         currency,
         reference,
@@ -35,7 +35,7 @@ const initiateCollection = async ({ amount, phoneNumber, customer_name, currency
         success: true,
         reference,
         status: 'PENDING',
-        message: 'Mock ObiPay USSD push prompt sent successfully'
+        message: 'Mock ObPay USSD push prompt sent successfully'
       };
     }
     throw err;
